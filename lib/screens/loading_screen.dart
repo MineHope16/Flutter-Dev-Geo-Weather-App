@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-
+import 'package:geo_weather_app/screens/location_screen.dart';
+import 'package:geo_weather_app/services/weather.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
@@ -11,56 +12,32 @@ class LoadingScreen extends StatefulWidget {
 
 class _LoadingScreenState extends State<LoadingScreen> {
 
-  void _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-
-    Position position = await Geolocator.getCurrentPosition();
-    print(position);
+  @override
+  void initState() {
+    super.initState();
+    getlocationData();
   }
+
+  void getlocationData() async{
+    print("Location Screen - getLocationCalled");
+    var weatherData = await WeatherModel().getLocationWeather();
+    print("Location Screen - getLocationCalled After getting location");
+
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LocationScreen(locationWeather: weatherData)));
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-            "Weather App"
-        ),
-      ),
-
       body: Center(
-        child: ElevatedButton(
-            onPressed: () {
-              _determinePosition();
-            },
-            child: Text(
-              "Get Location",
-              style: TextStyle(
-                color: Colors.black54,
-                fontSize: 20,
-              ),
-            )
-        ),
+          child: SpinKitDoubleBounce(
+            color: Colors.blue,
+            size: 50.0,
+          ),
       ),
-    );;
+    );
   }
 }
 
