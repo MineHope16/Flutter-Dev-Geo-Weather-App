@@ -20,6 +20,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   void getlocationData() async{
     print("Location Screen - getLocationCalled");
+
     var weatherData = await WeatherModel().getLocationWeather();
     print("Location Screen - getLocationCalled After getting location");
 
@@ -31,11 +32,23 @@ class _LoadingScreenState extends State<LoadingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-          child: SpinKitDoubleBounce(
-            color: Colors.blue,
-            size: 50.0,
-          ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+              SpinKitDoubleBounce(
+              color: Colors.blue,
+              size: 50.0,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+                "Fetching Your Location Data",
+              style: TextStyle(
+                fontSize: 20,
+              ),
+            )
+      ],
       ),
     );
   }

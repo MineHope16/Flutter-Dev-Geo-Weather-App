@@ -19,10 +19,3 @@ class NetworkHelper {
     }
   }
 }
-
-// var weatherCondition = decodedData['weather'][0]['main'];
-// var temp = decodedData['main']['temp'];
-// var city = decodedData['name'];
-// print(weatherCondition);
-// print(temp);
-// print(city);

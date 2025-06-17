@@ -3,6 +3,7 @@ import "package:geo_weather_app/screens/city_screen.dart";
 
 import "../constants.dart";
 import 'package:geo_weather_app/services/weather.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LocationScreen extends StatefulWidget {
   final locationWeather;
@@ -20,6 +21,7 @@ class _LocationScreenState extends State<LocationScreen> {
   late String weatherCondition;
   late String weatherMessage;
   late String weatherIcon;
+  late bool isLoading = false;
 
   WeatherModel weatherModel = WeatherModel();
 
@@ -54,7 +56,23 @@ class _LocationScreenState extends State<LocationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: isLoading ? Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SpinKitDoubleBounce(
+              color: Colors.blue,
+              size: 50.0,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              "Fetching Your Location Data",
+              style: TextStyle(
+                fontSize: 20,
+              ),
+            )
+          ], ) : Container(
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage('images/location_background.jpg'),
@@ -74,10 +92,16 @@ class _LocationScreenState extends State<LocationScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   TextButton(
-                    onPressed: () {
-                      setState(() async {
-                        var weatherData = await weatherModel.getLocationWeather();
-                        updateUI(weatherData);
+                    onPressed: () async{
+                      setState(()  {
+                        isLoading = true;
+                      });
+
+                      var weatherData = await weatherModel.getLocationWeather();
+                      updateUI(weatherData);
+
+                      setState(()  {
+                        isLoading = false;
                       });
                     },
                     child: Icon(
@@ -105,9 +129,8 @@ class _LocationScreenState extends State<LocationScreen> {
               ),
               Padding(
                 padding: EdgeInsets.only(left: 15.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.ideographic,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
                       '${temp.round()}°',
